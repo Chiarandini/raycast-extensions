@@ -7,6 +7,7 @@
 //
 // Not under src/sources/ for that reason — nothing here fetches anything.
 
+import { getPreferenceValues } from "@raycast/api";
 import { Entry } from "./model";
 import { escapeMarkdown } from "./render";
 
@@ -15,12 +16,18 @@ export function etymonlineUrl(term: string): string {
 }
 
 /**
- * The line at the foot of an entry.
+ * The one gate for every Etymonline link: the footer, the action panel and the
+ * error view.
  *
  * English only. Etymonline covers no other language, so on an ancestor like Old
  * English `wæter` the link would be a guaranteed dead end.
  */
-export function etymonlineFooter(entry: Entry, enabled: boolean): string {
-  if (!enabled || entry.lang !== "en") return "";
+export function linksToEtymonline(lang: string): boolean {
+  return lang === "en" && getPreferenceValues<Preferences>().showEtymonline;
+}
+
+/** The line at the foot of an entry. */
+export function etymonlineFooter(entry: Entry): string {
+  if (!linksToEtymonline(entry.lang)) return "";
   return `See also **${escapeMarkdown(entry.term)}** at [Etymonline](${etymonlineUrl(entry.term)})`;
 }

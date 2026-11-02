@@ -19,19 +19,22 @@
       "name": "search-etymology",
       "title": "Search Etymology",
       "description": "Look up a word and walk its chain of ancestors",
-      "mode": "view"
+      "mode": "view",
+      "subtitle": "Wiktionary"
     },
     {
       "name": "lookup-selection",
       "title": "Look up Selection",
       "description": "Show the etymology of the currently selected text",
-      "mode": "view"
+      "mode": "view",
+      "subtitle": "Wiktionary"
     },
     {
       "name": "random-etymology",
       "title": "Show Random Etymology",
       "description": "Open a random word that has a full etymology tree",
-      "mode": "view"
+      "mode": "view",
+      "subtitle": "Wiktionary"
     }
   ],
   "tools": [
@@ -41,6 +44,114 @@
       "description": "Return the etymology of an English word as a chain of ancestors, each with its term, language and relation (inherited, borrowed, derived, affix). Sourced from English Wiktionary."
     }
   ],
+  "ai": {
+    "evals": [
+      {
+        "input": "@etymology where does the word sarcasm come from?",
+        "mocks": {
+          "get-etymology": {
+            "word": "sarcasm",
+            "language": "English",
+            "found": true,
+            "source": "tree",
+            "url": "https://en.wiktionary.org/wiki/sarcasm#English",
+            "etymologies": [
+              {
+                "chain": "Proto-Indo-European *twerḱ- > Proto-Indo-European *túrḱs//*twérḱs > Proto-Hellenic *súrks//*swə́rks > Ancient Greek σᾰ́ρξ > Ancient Greek σᾰρκᾰ́ζω > Ancient Greek σαρκασμός > Late Latin sarcasmus > English sarcasm",
+                "ancestors": [
+                  {
+                    "term": "sarcasmus",
+                    "language": "Late Latin",
+                    "relation": "derived"
+                  },
+                  {
+                    "term": "σαρκασμός",
+                    "language": "Ancient Greek",
+                    "relation": "derived"
+                  },
+                  {
+                    "term": "σᾰρκᾰ́ζω",
+                    "language": "Ancient Greek",
+                    "relation": "affix"
+                  },
+                  {
+                    "term": "σᾰ́ρξ",
+                    "language": "Ancient Greek",
+                    "relation": "affix"
+                  }
+                ],
+                "prose": "From Late Latin sarcasmus, from Ancient Greek σαρκασμός (“a sneer”), from σαρκάζω (“to gnash the teeth (in anger)”), from σάρξ (“flesh”)."
+              }
+            ],
+            "attribution": "Wiktionary, CC BY-SA 4.0"
+          }
+        },
+        "expected": [
+          {
+            "callsTool": {
+              "name": "get-etymology",
+              "arguments": {
+                "word": "sarcasm"
+              }
+            }
+          },
+          {
+            "includes": "Greek"
+          }
+        ]
+      },
+      {
+        "input": "@etymology what did Old English wæter come from?",
+        "mocks": {
+          "get-etymology": {
+            "word": "wæter",
+            "language": "Old English",
+            "found": true,
+            "source": "tree",
+            "url": "https://en.wiktionary.org/wiki/w%C3%A6ter#Old%20English",
+            "etymologies": [
+              {
+                "chain": "Proto-Indo-European *wed- > Proto-Indo-European *wódr̥ > Proto-Germanic *watōr > Proto-West Germanic *watar > Old English wæter",
+                "ancestors": [
+                  {
+                    "term": "*watar",
+                    "language": "Proto-West Germanic",
+                    "relation": "inherited"
+                  },
+                  {
+                    "term": "*watōr",
+                    "language": "Proto-Germanic",
+                    "relation": "inherited"
+                  },
+                  {
+                    "term": "*wódr̥",
+                    "language": "Proto-Indo-European",
+                    "relation": "inherited"
+                  }
+                ],
+                "prose": "From Proto-West Germanic *watar, from Proto-Germanic *watōr, from Proto-Indo-European *wédōr, collective of *wódr̥."
+              }
+            ],
+            "attribution": "Wiktionary, CC BY-SA 4.0"
+          }
+        },
+        "expected": [
+          {
+            "callsTool": {
+              "name": "get-etymology",
+              "arguments": {
+                "word": "wæter",
+                "language": "ang"
+              }
+            }
+          },
+          {
+            "includes": "Proto-Germanic"
+          }
+        ]
+      }
+    ]
+  },
   "preferences": [
     {
       "name": "defaultView",

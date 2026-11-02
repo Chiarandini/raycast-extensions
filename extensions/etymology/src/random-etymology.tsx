@@ -10,16 +10,11 @@ import { EntryDetail } from "./components/EntryDetail";
 export default function Command() {
   const { data: term, isLoading, error } = usePromise(randomTermWithTree, []);
 
-  if (isLoading) return <Detail isLoading markdown="" navigationTitle="Random Etymology" />;
+  if (isLoading) return <Detail isLoading markdown="" />;
 
   if (error || !term) {
-    return (
-      <Detail
-        navigationTitle="Random Etymology"
-        markdown={["# Could not reach Wiktionary", "", error?.message ?? ""].join("\n")}
-      />
-    );
+    return <Detail markdown={["# Could not reach Wiktionary", "", error?.message ?? ""].join("\n")} />;
   }
 
-  return <EntryDetail term={term} />;
+  return <EntryDetail term={term} root />;
 }

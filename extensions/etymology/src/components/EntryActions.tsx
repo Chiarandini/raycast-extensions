@@ -4,7 +4,7 @@
 import { ReactNode } from "react";
 import { Action, ActionPanel, Icon, Keyboard, getPreferenceValues } from "@raycast/api";
 import { Entry, EtymNode, ancestors } from "../model";
-import { etymonlineUrl } from "../etymonline";
+import { etymonlineUrl, linksToEtymonline } from "../etymonline";
 import { applyTemplate, chainOneLine, plainSummary } from "../render";
 import { Favorite } from "../favorites";
 import { COPY_LINK, COPY_MARKDOWN, COPY_PROSE, TOGGLE_VIEW } from "../shortcuts";
@@ -71,7 +71,7 @@ export function EntryActions(props: Props) {
 
       <ActionPanel.Section title="Open">
         <Action.OpenInBrowser title="Open in Wiktionary" url={entry.pageUrl} shortcut={Keyboard.Shortcut.Common.Open} />
-        {prefs.showEtymonline && (
+        {linksToEtymonline(entry.lang) && (
           <Action.OpenInBrowser
             title="Open in Etymonline"
             url={etymonlineUrl(entry.term)}

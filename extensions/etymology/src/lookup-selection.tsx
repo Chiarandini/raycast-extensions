@@ -14,7 +14,6 @@ export default function Command() {
   if (error || !term) {
     return (
       <Detail
-        navigationTitle="Look Up Selection"
         markdown={[
           "# Nothing selected",
           "",
@@ -26,7 +25,7 @@ export default function Command() {
     );
   }
 
-  return <EntryDetail term={term} />;
+  return <EntryDetail term={term} root />;
 }
 
 /**

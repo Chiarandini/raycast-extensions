@@ -14,7 +14,7 @@ import { EtymNode } from "../model";
 import { loadEntry, reloadEntry } from "../entry";
 import { earliest, entryMarkdown, relationKey } from "../render";
 import { pageUrl } from "../sources";
-import { etymonlineFooter, etymonlineUrl } from "../etymonline";
+import { etymonlineFooter, etymonlineUrl, linksToEtymonline } from "../etymonline";
 import { languageName } from "../langcodes";
 import { EntryActions } from "./EntryActions";
 import * as favorites from "../favorites";
@@ -22,9 +22,12 @@ import * as favorites from "../favorites";
 interface Props {
   term: string;
   lang?: string;
+  /** Rendered as a command's first screen, whose title Raycast already sets to the command name. */
+  root?: boolean;
 }
 
-export function EntryDetail({ term, lang = "en" }: Props) {
+export function EntryDetail({ term, lang = "en", root = false }: Props) {
+  const title = (text: string) => (root ? undefined : text);
   const [view, setView] = useState(getPreferenceValues<Preferences>().defaultView);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -57,7 +60,7 @@ export function EntryDetail({ term, lang = "en" }: Props) {
   if (error && !entry) {
     return (
       <Detail
-        navigationTitle={term}
+        navigationTitle={title(term)}
         markdown={[
           `# ${term}`,
           "Could not reach Wiktionary.",
@@ -77,11 +80,13 @@ export function EntryDetail({ term, lang = "en" }: Props) {
               url={pageUrl(term, languageName(lang))}
               shortcut={Keyboard.Shortcut.Common.Open}
             />
-            <Action.OpenInBrowser
-              title="Open in Etymonline"
-              url={etymonlineUrl(term)}
-              shortcut={Keyboard.Shortcut.Common.OpenWith}
-            />
+            {linksToEtymonline(lang) && (
+              <Action.OpenInBrowser
+                title="Open in Etymonline"
+                url={etymonlineUrl(term)}
+                shortcut={Keyboard.Shortcut.Common.OpenWith}
+              />
+            )}
           </ActionPanel>
         }
       />
@@ -89,22 +94,17 @@ export function EntryDetail({ term, lang = "en" }: Props) {
   }
 
   if (!entry) {
-    return <Detail isLoading={isLoading} markdown={`# ${term}`} navigationTitle={term} />;
+    return <Detail isLoading={isLoading} markdown={`# ${term}`} navigationTitle={title(term)} />;
   }
 
   const tree = entry.sections.find((s) => s.tree)?.tree;
   const oldest = tree ? earliest(tree) : undefined;
-  const markdown = [
-    entryMarkdown(entry, view),
-    etymonlineFooter(entry, getPreferenceValues<Preferences>().showEtymonline),
-  ]
-    .filter(Boolean)
-    .join("\n\n");
+  const markdown = [entryMarkdown(entry, view), etymonlineFooter(entry)].filter(Boolean).join("\n\n");
 
   return (
     <Detail
       isLoading={isLoading}
-      navigationTitle={`${entry.term} — ${entry.langName}`}
+      navigationTitle={title(`${entry.term} — ${entry.langName}`)}
       markdown={markdown}
       metadata={
         <Detail.Metadata>
